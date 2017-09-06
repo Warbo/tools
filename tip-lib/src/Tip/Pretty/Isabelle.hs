@@ -116,7 +116,7 @@ ppFuncs (fn:fns) = header <+>
     vcat (intersperseWithPre ($\) "and" fTys) <+> "where" $$
     vcat (intersperseWithPre ($\) "|" fDefs) $$
     termination
-  where (header,termination) | null fns  = ("fun",empty)
+  where (header,termination) | null (func_args fn) = ("definition",empty)
                              | otherwise = ("function","by pat_completeness auto")
         (fTys, fDefs) = foldr (\(ppFunc -> (pf,pds)) (ftys,fdefs) ->
                                   (pf:ftys, pds++fdefs))
