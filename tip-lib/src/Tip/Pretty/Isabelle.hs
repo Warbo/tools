@@ -158,12 +158,12 @@ ppExpr i (hd :@: es)  = parIf ((i > 0 && not (null es)) || isLogB hd) $
         isLogB _           = False
 ppExpr _ (Lcl l)      = ppVar (lcl_name l)
 ppExpr i (Lam ls e)   = parIf (i > 0) $ ppQuant "%" ls "=>" (ppExpr 0 e)
-ppExpr i (Let x b e)  = parIf (i > 0) $ sep ["let" $\ ppLocalBinder x <+> "=" $\ ppExpr 0 b, "in" <+> ppExpr 0 e]
+ppExpr i (Let x b e)  = parIf True    $ sep ["let" $\ ppLocalBinder x <+> "=" $\ ppExpr 0 b, "in" <+> ppExpr 0 e]
 ppExpr i (Quant _ q ls e) = parIf (i > 0) $ ppQuant (ppQuantName q) ls "." (ppExpr 0 e)
 ppExpr i (Match e alts) =
-  parIf (i <= 0) $ block ("case" $\ ppExpr 0 e $\ "of")
-                         (vcat (intersperseWithPre ($\) "|" (map ppCase
-                                  (uncurry (++) (partition ((/= Default).case_pat) alts)))))
+  parIf True $ block ("case" $\ ppExpr 0 e $\ "of")
+                     (vcat (intersperseWithPre ($\) "|" (map ppCase
+                              (uncurry (++) (partition ((/= Default).case_pat) alts)))))
 
 ppHead :: (PrettyVar a, Ord a) => Head a -> [Doc] -> Doc
 ppHead (Gbl gbl)      args                        = ppVar (gbl_name gbl) $\ fsep args
@@ -283,4 +283,3 @@ isabelleKeywords = (words . unlines)
     , "Cons"
     , "EX ALL"
     ]
-
